@@ -1,4 +1,7 @@
 const path = require('path');
+const HappyPack = require('happypack');
+const os = require('os');
+const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length});
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir);
@@ -20,20 +23,15 @@ module.exports = {
       '_': 'lodash'
     } 
   },
-  plugins: [
-
-  ],
   module: {
     rules: [
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
-        exclude: /node_modules/
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: ['file-loader'],
-        exclude: /node_modules/
       },
       {
         test: /\.tsx?$/,
@@ -42,15 +40,22 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-        options: {
-          cacheDirectory: true,
-          presets: ['react', 'stage-0', ['env', { modules: false }]],
-          // modules关闭 Babel 的模块转换功能，保留原本的 ES6 模块化语法
-          plugins: ['transform-decorators-legacy']
-        }
+        loader: 'happypack/loader?id=happyBabel',  //使用happypack进行多核打包，加快打包速度
+        exclude: /node_modules/
       }
     ]
-  }
+  },
+  plugins: [
+    new HappyPack({
+      id: 'happyBabel',
+      loaders: [{
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true,
+          presets: ['react', "es2015", 'stage-0'],
+          plugins: ['transform-decorators-legacy', "transform-class-properties"]
+        }
+      }]
+    })
+  ]
 };
