@@ -13,7 +13,11 @@ module.exports = merge(common, {
     port: '8888',
     overlay: true,
     inline: true,
-    compress: true
+    compress: true,
+    stats: {
+      builtAt: true,
+      modules: false
+    }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
