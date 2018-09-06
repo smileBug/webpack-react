@@ -40,21 +40,27 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
-        loader: 'happypack/loader?id=happyBabel',  //使用happypack进行多核打包，加快打包速度
+        loader: 'happypack/loader?id=babel',  //使用happypack进行多核打包，加快打包速度
         exclude: /node_modules/
       }
     ]
   },
   plugins: [
     new HappyPack({
-      id: 'happyBabel',
+      // 表示处理哪类文件
+      id: 'babel',
+      // 就是Loader的配置
       loaders: [{
         loader: 'babel-loader',
         options: {
           cacheDirectory: true,
           presets: ['react', "es2015", 'stage-0'],
           plugins: ['transform-decorators-legacy', "transform-class-properties"]
-        }
+        },
+        // 共享进程池
+        threadPool: happyThreadPool,
+        // 输出日志
+        verbose: true,
       }]
     })
   ]

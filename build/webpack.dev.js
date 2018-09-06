@@ -11,7 +11,9 @@ module.exports = merge(common, {
     publicPath: '/',
     host: '127.0.0.1',
     port: '8888',
-    overlay: true
+    overlay: true,
+    inline: true,
+    compress: true
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
